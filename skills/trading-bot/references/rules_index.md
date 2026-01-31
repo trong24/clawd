@@ -101,7 +101,7 @@ Legend:
   - Source: `_93_5SpUKZE 35:00–40:00` (`_93_5SpUKZE/35-40.md`)
 
 - **P76 — Quán tính (RSI 80/20) định hướng hành vi**
-  - Why: RSI 80+ (hoặc 20-) xác nhận lực cực mạnh theo xu hướng → không đánh ngược (không short khi 80+, không long khi 20-).
+  - Why: **chỉ** coi là quán tính khi RSI **>80** (tăng) hoặc **<20** (giảm). Đây là xác nhận lực cực mạnh theo xu hướng → không đánh ngược (không short khi >80, không long khi <20).
   - Tags: #context_only #momentum #no_countertrend
   - Source: `_93_5SpUKZE 40:00–45:00` (`_93_5SpUKZE/40-45.md`)
 
