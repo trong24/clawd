@@ -1,0 +1,12 @@
+# Ignore local/derived/sensitive artifacts
+www.youtube.com_cookies.txt
+youtube/
+ytdown/
+openclaw/
+
+# OS
+.DS_Store
+
+# Python
+__pycache__/
+*.pyc

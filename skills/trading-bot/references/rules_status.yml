@@ -1,0 +1,56 @@
+# Rule status for bot usage
+# - confirmed: can be used as a hard rule/trigger
+# - draft: keep for learning/context; do not use as a strict trigger without confirmation
+
+video: mixed
+
+rules:
+  # _93_5SpUKZE
+  P75: confirmed   # Divergence = adjustment warning (user confirmed)
+  P76: draft       # Quán tính (RSI 80/20) định hướng hành vi
+  P77: draft       # Lực = bản chất con sóng (quản trị theo lực)
+
+  # e2nkEcKabYw
+  P16: draft
+  P17: draft
+  P18: confirmed   # "tính bảng" = kịch bản (user confirmed)
+  P19: draft
+  P20: draft
+  P21: draft
+  P22: draft
+  P23: draft
+  P24: draft
+  P25: draft
+  P26: draft
+  P27: draft
+  P28: draft
+  P29: draft
+  P30: draft
+  P31: draft
+  P32: draft
+  P33: draft
+  P34: confirmed   # TP adaptive = combine A+B (user confirmed)
+  P35: draft
+  P36: draft
+  P37: draft
+  P38: draft
+  P39: draft
+  P40: draft
+  P41: draft
+  P42: draft
+  P43: draft
+  P44: draft
+  P45: draft
+  P46: draft
+  P47: draft
+  P48: draft
+  P49: draft
+  P50: draft
+  P51: draft
+  P52: draft
+  P53: draft
+  P54: draft
+  P55: draft
+  P56: draft
+  P57: draft
+  P58: draft
