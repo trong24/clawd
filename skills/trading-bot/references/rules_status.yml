@@ -7,7 +7,7 @@ video: mixed
 rules:
   # _93_5SpUKZE
   P75: confirmed   # Divergence = adjustment warning (user confirmed)
-  P76: draft       # Quán tính (RSI 80/20) định hướng hành vi
+  P76: confirmed   # Quán tính (RSI 80/20) định hướng hành vi (user confirmed)
   P77: draft       # Lực = bản chất con sóng (quản trị theo lực)
 
   # e2nkEcKabYw
