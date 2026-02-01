@@ -9,6 +9,38 @@ rules:
   P75: confirmed   # Divergence = adjustment warning (user confirmed)
   P76: confirmed   # Quán tính (RSI 80/20) định hướng hành vi (user confirmed)
   P77: draft       # Lực = bản chất con sóng (quản trị theo lực)
+  P78: confirmed   # Điều chỉnh (giai đoạn 2) = RSI cắt xuống dưới 2 MA(RSI) (user confirmed)
+  P79: draft       # RSI điều chỉnh ≠ giá điều chỉnh
+  P80: draft       # Giai đoạn 3 = hoàn thành/reset lực (chu trình 1–2–3)
+  P81: confirmed   # Dấu hiệu xu hướng yếu: nhịp 3 không kéo RSI về 80/20 (user confirmed)
+  P82: draft       # RSI 40–60 là vùng quan sát (không auto đảo chiều)
+  P83: draft       # TF nhỏ cho timing, HTF cho direction
+  P84: draft       # Không kết luận đảo chiều chỉ vì RSI chạm 20/80 rồi bật
+  P85: draft       # RSI 50 là ranh giới lực (context)
+  P86: draft       # Tránh FOMO khi RSI không duy trì được 70–80/30–20
+  P87: draft       # Ưu tiên “duy trì” hơn “chạm” (RSI vs MA(RSI))
+  P88: draft       # Nhịp RSI dạng “U” trong trend (đọc điều chỉnh lực)
+  P89: draft       # Ưu tiên “đợi xác nhận quay lại” sau nhịp mạnh
+  P90: draft       # Tách bạch điều chỉnh giá vs điều chỉnh lực (RSI)
+  P91: draft       # “Gãy cấu trúc lực” cần điều kiện kép (context)
+  P92: draft       # RSI reset về 50/40–60 rồi bật lại (HTF đồng thuận) = nhịp nghỉ lực
+  P93: draft       # Phân biệt “hồi kỹ thuật” vs “đổi pha” bằng điều kiện duy trì
+  P94: draft       # Tránh vào muộn sau pha lực đã chạy
+  P95: draft       # Sideways ở vùng cao + RSI reset không phải đảo chiều
+  P96: draft       # Trong pha điều chỉnh, ưu tiên “đợi RSI quay lại” thay vì đoán
+  P97: draft       # Breakout đáng tin hơn khi RSI hỗ trợ (vượt + duy trì)
+  P98: draft       # Gần kháng cự HTF thì hạ kỳ vọng, tránh FOMO
+  P99: draft       # Trước kháng cự HTF, chỉ ưu tiên breakout khi có “lực xác nhận”
+  P100: draft      # RSI quanh 50 + MA(RSI) đan xen = edge thấp
+  P101: draft      # RSI bật lên 60–70 chưa đủ để kết luận “mở trend”
+  P102: draft      # RSI 60–70 đi ngang = lực giảm tốc (context)
+  P103: draft      # Trong box tích luỹ, ưu tiên NO TRADE (chỉ đánh breakout có lực xác nhận)
+  P104: draft      # Kịch bản vào theo nhịp reset (không cần ăn cả đoạn)
+  P105: draft      # Pullback “đẹp” để theo trend (RSI reset về gần 50 rồi bật)
+  P106: draft      # HTF zone là “bản đồ” (bỏ MA giá)
+  P107: draft      # Sát kháng cự HTF: chỉ ưu tiên breakout khi RSI thoát cân bằng + duy trì
+  P108: draft      # (NEEDS REDO) pending transcript 40:00–45:00
+  P110: draft      # Quán tính là “zone tâm lý” và phải scan đa khung (TF lớn nhất đáng lưu ý nhất)
 
   # e2nkEcKabYw
   P16: draft
