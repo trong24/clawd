@@ -271,6 +271,12 @@ Legend:
   - Tags: #force #mtf #context_only
   - Source: user clarification (2026-02-01)
 
+- **P111 — Quán tính giảm (1H) chỉ coi là “mất” khi RSI(1H) hồi > 60**
+  - Why: RSI(1H) hồi <60 chỉ là nhịp nghỉ/giảm tốc; quán tính giảm vẫn còn hiệu lực → ưu tiên SELL rallies cho tới khi RSI(1H) hồi mạnh >60.
+  - Anti-misuse: không dùng RSI>60 như trigger LONG ngay; vẫn phải xét zone và force trên TF vào lệnh.
+  - Tags: #force #mtf #context_only
+  - Source: user clarification (2026-02-01)
+
 - **P24 — Avoid bottom-picking in strong momentum**
   - Why: catching falling knives increases drawdown and ruins discipline.
   - Tags: #entry #no_bottom_pick

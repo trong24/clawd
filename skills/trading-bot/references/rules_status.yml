@@ -41,6 +41,7 @@ rules:
   P107: draft      # Sát kháng cự HTF: chỉ ưu tiên breakout khi RSI thoát cân bằng + duy trì
   P108: draft      # (NEEDS REDO) pending transcript 40:00–45:00
   P110: draft      # Quán tính là “zone tâm lý” và phải scan đa khung (TF lớn nhất đáng lưu ý nhất)
+  P111: draft      # Quán tính giảm (1H) chỉ coi là “mất” khi RSI(1H) hồi > 60
 
   # e2nkEcKabYw
   P16: draft
