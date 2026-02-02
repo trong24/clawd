@@ -1,0 +1,30 @@
+{
+  "trader_name": "Alpha",
+  "account_currency": "USD",
+  "markets": ["BTCUSDT (crypto)"],
+  "timeframe_primary": "H1",
+  "timeframe_confirm": ["H4", "D1"],
+  "rsi": { "length": 14, "overbought": 80, "oversold": 20, "ma_fast": 9, "ma_slow": 45 },
+  "risk": { "risk_per_trade_pct": 1.0, "max_daily_loss_pct": 3.0 },
+  "position_sizing_note": "Fixed fractional based on stop distance (R-multiple).",
+  "rules": {
+    "entry": [
+      "- Long khi H4/D1 tăng; RSI>50; RSI trên MA(9)&MA(45) và MA(9) > MA(45).",
+      "- Short khi H4/D1 giảm; RSI<50; RSI dưới MA(9)&MA(45) và MA(9) < MA(45).",
+      "- Ưu tiên sau nhịp điều chỉnh khung nhỏ + tái bứt RSI kèm MA mở rộng."
+    ],
+    "exit": [
+      "- SL tại điểm vô hiệu cấu trúc gần nhất.",
+      "- TP tối thiểu 2R hoặc vùng S/R.",
+      "- Dời SL về hòa vốn tại 1R; có thể chốt 50% tại 1R, phần còn lại trailing."
+    ],
+    "management": [
+      "- Không add-on khi chưa có pullback hợp lệ.",
+      "- Tạm dừng ngày sau 2 lệnh thua.",
+      "- Tránh giao dịch khi RSI quanh 50 và MA đan xen."
+    ]
+  },
+  "journaling_prompts_ref": "context_blocks/journaling_prompts.md",
+  "examples_ref": "examples/ex_0001.output.json",
+  "locale": "vi-VN"
+}

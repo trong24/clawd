@@ -1,0 +1,51 @@
+{
+  // REQUIRED: id phiên hoặc timestamp
+  "session_id": "{{SESSION_ID}}",
+
+  // REQUIRED: mã sản phẩm & sàn
+  "instrument": "{{INSTRUMENT}}",      // vd: "BTCUSDT.PERP"
+  "exchange": "{{EXCHANGE}}",          // vd: "Binance"
+
+  // REQUIRED: khung thời gian sử dụng
+  "timeframes": {
+    "anchor": ["{{ANCHOR_TF_1}}", "{{ANCHOR_TF_2}}"],  // vd: ["H4", "D1"]
+    "execution": "{{EXEC_TF}}",                         // vd: "H1"
+    "management": "{{MGMT_TF}}"                         // vd: "M15"
+  },
+
+  // REQUIRED: cấu hình RSI và MA trên RSI
+  "indicators": {
+    "rsi": {
+      "length": {{RSI_LEN}},            // vd: 14
+      "overbought": {{RSI_OB}},         // vd: 80
+      "oversold": {{RSI_OS}},           // vd: 20
+      "ma_fast": {{RSI_MA_FAST}},       // vd: 9
+      "ma_slow": {{RSI_MA_SLOW}}        // vd: 45
+    }
+  },
+
+  // OPTIONAL nhưng khuyến nghị: cấu hình risk
+  "risk": {
+    "account_size": {{ACCOUNT_SIZE}},         // vd: 10000
+    "risk_per_trade_pct": {{RISK_PER_TRADE}}, // vd: 0.5
+    "max_daily_drawdown_pct": {{MAX_DD}}      // vd: 2
+  },
+
+  // REQUIRED: rules (chuỗi markdown hoặc danh sách)
+  "rules": {
+    "entry": [
+      "MTF đồng thuận (khung anchor nghiêng cùng hướng).",
+      "Long: RSI>50; RSI trên MA(9)&MA(45); MA9>MA45; vào sau pullback nhỏ khi MA mở rộng.",
+      "Tránh trade khi RSI 40–60 & MA đan xen."
+    ],
+    "exit": [
+      "SL tại điểm vô hiệu cấu trúc gần nhất.",
+      "Chốt 1/2 tại 1R, dời SL về BE; mục tiêu cơ bản ≥2R hoặc vùng S/R.",
+      "Thoát khi khung quản lý mất quán tính (Long: RSI<40; Short: RSI>60)."
+    ],
+    "management": [
+      "Quản theo khung LTF lớn nhất còn quán tính (thường M15 khi vào H1).",
+      "Gần kháng cự HTF: partial 1/2 + trail phần còn lại."
+    ]
+  }
+}

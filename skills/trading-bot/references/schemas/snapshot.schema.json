@@ -1,0 +1,38 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "openclaw://trading-bot/snapshot.schema.json",
+  "title": "Trading Snapshot",
+  "type": "object",
+  "required": ["exchange", "symbol", "generated_at_utc", "timeframes"],
+  "properties": {
+    "exchange": { "type": "string" },
+    "symbol": { "type": "string" },
+    "generated_at_utc": { "type": "string" },
+    "timeframes": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "object",
+        "required": ["interval", "candles"],
+        "properties": {
+          "interval": { "type": "string" },
+          "candles": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": ["ts_utc", "open", "high", "low", "close", "volume"],
+              "properties": {
+                "ts_utc": { "type": "string" },
+                "open": { "type": "number" },
+                "high": { "type": "number" },
+                "low": { "type": "number" },
+                "close": { "type": "number" },
+                "volume": { "type": "number" }
+              }
+            }
+          },
+          "indicators": { "type": "object" }
+        }
+      }
+    }
+  }
+}

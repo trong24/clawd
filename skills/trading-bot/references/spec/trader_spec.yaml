@@ -1,0 +1,213 @@
+schema_version: 1.0
+
+profile:
+  venue: Binance
+  instrument: BTCUSDT
+  type: perp
+  timeframes: [15m, 1h, 4h]
+
+asset_strategy:
+  default: BTCUSDT
+  allow_alt_when:
+    btc_state: sideways
+    alt_trend: strong
+    liquidity: adequate
+  leverage_alt_factor_max: 0.5
+
+risk:
+  risk_per_trade_pct: 1.0     # bắt đầu nhỏ; trần 2.0%
+  max_daily_loss_pct: 2.0
+  min_R_multiple: 2.0
+  max_leverage_btc: 2
+
+sizing:
+  rule: "size = floor((NAV_USDT * risk_per_trade_pct/100) / abs(entry - stop))"
+
+setups:
+  - name: Pullback EMA20 1h
+    pass:
+      - "trend_1h == up"
+      - "retest == EMA20_1h"
+      - "RSI_14 between 50 and 65"
+      - "volume >= avg20 * 1.2"
+    invalid:
+      - "close_1h < last_HL"
+  - name: Breakout key level 1h
+    pass:
+      - "close_1h > resistance_key"
+      - "volume >= avg20 * 1.5"
+    invalid:
+      - "upper_wick > body*1.5 and volume_low"
+
+entry_policy:
+  avoid_top_bottom_picking: true
+  confirm:
+    - "close > resistance_key (long) OR BOS up + volume ≥ 1.5x avg20 OR RSI cross 50↑"
+  window: ["first pullback to level/EMA20 on entry TF"]
+  invalid:
+    - "no technical stop"
+    - "catching falling knife / fade pump"
+    - "breakout with ADX<15 & MA20≈MA50 & ATR contraction"
+
+partials_default: &partials_default
+  - at_R: 1.0
+    action: "take_50% & move_stop_BE"
+
+exits:
+  partial: *partials_default
+  trailing: EMA20_1h
+
+exit_policy:
+  hard_tp: false
+  targets_provisional: [1R, 2R, key_level]
+  manage_at_targets:
+    - "if strength holds → keep & trail"
+    - "if weakens → scale out/exit"
+  trailing_rule: EMA20_1h
+  partials: *partials_default
+
+checklist:
+  - news_ok
+  - RR>=2
+  - trend_aligned
+  - liquidity_ok
+  - thesis_and_risk_quantified
+  - no_crowd_influence
+  - no_fomo_or_goal_chasing
+
+sideways_behavior:
+  prefer_no_trade: true
+  detect: ["MA20≈MA50 flat (1h)","ATR contraction","ADX<20"]
+
+session_stops:
+  consecutive_losses_stop: 3
+  psychology_flags_stop: true
+
+mtf:
+  entry_tf: "1h"                  # TF vào lệnh mặc định
+  confirm_tfs: ["4h","D"]         # cần đồng pha ≥2 khung lớn hơn
+  max_phase_mismatch: 0           # 0 = không cho lệch pha
+
+rsi_cycle:
+  use_on_entry_tf: true
+  ema_fast_on_rsi: 9
+  wma_slow_on_rsi: 45
+  long:
+    peak_min: 80                  # GĐ1
+    fail_below: 40                # rơi dưới ngưỡng này → fail chu kỳ
+    require_cross_up: true        # RSI cắt lên EMA9 rồi WMA45
+  short:
+    enable: false                 # mặc định tắt; bật nếu muốn train SHORT
+
+entry_window:
+  first_pullback_bars_max: 8      # số nến tối đa để valid cửa vào sau xác nhận
+
+wick_filter:
+  upper_wick_to_body_max: 1.5
+
+mtf_direction_policy:
+  long_only_when_htf_up: true
+  hide_short_button_in_uptrend: true
+  short_only_when_htf_down: false  # bật nếu muốn cho phép short
+
+filters:
+  mtf_block:
+    - "MTF_consensus_pass == false"
+  rsi_block:
+    - "rsi_cycle.long.peak_min not reached"
+    - "rsi fell below rsi_cycle.long.fail_below in phase-2"
+    - "rsi did not cross up EMA9 then WMA45"
+
+rules:
+  - id: uptrend_only_actions
+    version: 1
+    description: >
+      Khi HTF (H4/D1) đang uptrend, chỉ được BUY hoặc WAIT. Tuyệt đối không SHORT
+      cho tới khi có tín hiệu đảo chiều hợp lệ trên HTF.
+    evidence:
+      - source: youtube
+        video_id: _93_5SpUKZE
+        timestamp: "00:03:29–00:04:13"
+        quote: "trong một xu hướng tăng chúng ta chỉ có hai trạng thái… buy hoặc chờ buy… không có động vào cái nút short"
+    detection:
+      htf:
+        tfs: ["H4","D1"]
+        structure: "HH/HL"
+        momentum:
+          fast_ma: "EMA9"
+          slow_ma: "WMA45"
+          condition: "fast_ma > slow_ma"
+      consensus_required: true
+    actions:
+      allowed: ["buy", "wait"]
+      forbidden: ["short", "sell_short", "counter_trend_short"]
+    risk:
+      per_trade_max_loss_pct: 2
+      note: "Theo quy tắc Alden: 1.5–2%/lệnh."
+
+analysis:
+  mtf:
+    trend_frames: [H4, H12, D1]
+    entry_frames: [M15, H1]
+    rsi_ma:
+      fast: EMA9
+      slow: WMA45
+    consensus_rule:
+      buy: "HTF RSI > both MAs and >50; Entry TF completes Phase2→Phase3 up"
+      sell: "HTF RSI < both MAs and <50; Entry TF completes Phase2→Phase3 down"
+    no_trade:
+      - "HTF RSI in 40–60 range (sideways)"
+      - "Frames not aligned (mixed signals)"
+      - "Entry TF Phase2 dips <40 for longs (or >60 for shorts)"
+
+entry_criteria:
+  - name: "RSI Phase-3 trigger"
+    timeframe: "M15/H1"
+    condition: "RSI crosses above EMA9 & WMA45 (bull) with MAs opening"
+
+risk_management:
+  per_trade_risk_pct: 2
+  invalidate_on:
+    - "Managing-frame loses momentum (fails next ≥80 print or RSI closes <40)"
+    - "RSI crosses back below both MAs on Entry TF after entry"
+
+journaling:
+  capture:
+    - "RSI phase per TF (1/2/3) at entry and exit"
+    - "Which frame used for management"
+    - "Reason for exit (fail ≥80 / close <40 / structure)"
+
+# === RSI MA9/WMA45 Strategy (append) =========================================
+rsi_ma_strategy:
+  enabled: true
+  params:
+    rsi_length: 14
+    rsi_sma_len: 9
+    rsi_wma_len: 45
+    regime_mid_low: 40         # vùng hồi “bull” giữ trên ~40
+    regime_mid_high: 60        # vùng hồi “bear” kẹt dưới ~60
+    ob_level: 70
+    os_level: 30
+    price_filter:
+      use: true
+      ema_fast: 50
+      ema_slow: 200
+  rules:
+    regime_long: "rsi_sma > rsi_wma AND slope(rsi_wma) > 0"
+    regime_short: "rsi_sma < rsi_wma AND slope(rsi_wma) < 0"
+    trigger_long: "rsi BETWEEN regime_mid_low AND 55 AND cross_up(rsi, rsi_sma)"
+    trigger_short: "rsi BETWEEN 45 AND regime_mid_high AND cross_down(rsi, rsi_sma)"
+    manage_to_be: "move_to_be on RR>=1 OR (rsi > 60 AND rising)"
+    partial_take_long: "take 30-50% near rsi in [70..80] if momentum slowing"
+    partial_take_short: "take 30-50% near rsi in [20..30] if momentum slowing"
+    full_exit_long: "cross_down(rsi_sma, rsi_wma) OR rsi < regime_mid_low"
+    full_exit_short: "cross_up(rsi_sma, rsi_wma) OR rsi > regime_mid_high"
+  mtf:
+    trend_tf: "H4_or_D1"
+    entry_tf: "M15_to_H1"
+    require_alignment: true
+  risk:
+    max_risk_per_trade_pct: 1.0
+    min_rr: 1.5
+    sl_method: "swing_or_ATR"
+    atr_mult: 1.5

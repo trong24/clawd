@@ -1,0 +1,1 @@
+trade_id,opened_at_local,symbol,side,tf_trigger,setup,entry,sl,balance_usdt,risk_pct_balance,risk_usdt,size_base,leverage,opened_reason,notes,closed_at_local,exit,realized_pnl_usdt,unrealized_pnl_usdt,snapshot_ts_utc,price_snapshot
