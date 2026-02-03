@@ -1,6 +1,13 @@
 {
-  "last_candle_ts_utc": "2026-02-01T14:15:00+00:00",
-  "position": null,
+  "last_candle_ts_utc": "2026-02-03T02:30:00+00:00",
+  "position": {
+    "side": "SHORT",
+    "tf": "15m",
+    "entry": 78400.0,
+    "sl": 79500.0,
+    "size_btc": 0.009,
+    "opened_ts_utc": "2026-02-03T02:48:39+00:00"
+  },
   "balance_usdt": 1000.0,
   "risk_pct": 1.0
 }

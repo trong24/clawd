@@ -52,6 +52,7 @@ def ensure_csv():
     CSV_PATH.parent.mkdir(parents=True, exist_ok=True)
     if CSV_PATH.exists():
         return
+    # Schema aligned with cron_15m_bot.py
     headers = [
         "event_id",
         "event_ts_utc",
@@ -69,7 +70,10 @@ def ensure_csv():
         "ema9_rsi15",
         "wma45_rsi15",
         "bias15m",
-        "candle_ts_utc",
+        "bias1h",
+        "bias4h",
+        "bias1d",
+        "snapshot_candle_ts_utc",
         "notes",
     ]
     with CSV_PATH.open("w", newline="", encoding="utf-8") as f:
@@ -97,6 +101,10 @@ def main():
     ap.add_argument("--ema9", type=float, required=True)
     ap.add_argument("--wma45", type=float, required=True)
     ap.add_argument("--bias15m", required=True)
+    # Added to match cron_15m_bot.py schema
+    ap.add_argument("--bias1h", default="")
+    ap.add_argument("--bias4h", default="")
+    ap.add_argument("--bias1d", default="")
 
     args = ap.parse_args()
 
@@ -129,7 +137,10 @@ def main():
         "ema9_rsi15": f"{args.ema9:.2f}",
         "wma45_rsi15": f"{args.wma45:.2f}",
         "bias15m": args.bias15m,
-        "candle_ts_utc": args.candle_ts,
+        "bias1h": args.bias1h,
+        "bias4h": args.bias4h,
+        "bias1d": args.bias1d,
+        "snapshot_candle_ts_utc": args.candle_ts,
         "notes": args.notes,
     }
     append_row(row)

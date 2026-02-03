@@ -229,14 +229,24 @@ def main():
     pos = state.get("position")
 
     # CLOSE logic (bad force)
+    # Rule update (2026-01-31): RSI 40-60 is WARNING only, not auto-close.
+    # Close only when:
+    #   (a) bias flips to opposite direction (e.g., SHORT but 15m shows BUY_BIAS)
+    #   (b) RSI 40-60 AND bias flips (confirmation required)
+    # RSI 40-60 alone = HOLD with warning
     if pos is not None:
         side = pos["side"]
         bad_force = False
+        warning_only = False
         reason = []
-        if in_balance_zone(rsi15):
-            bad_force = True
-            reason.append("RSI15 entered 40-60 balance zone")
-        # bias flips opposite
+
+        # Check if RSI in balance zone (warning, not auto-close)
+        rsi_in_balance = in_balance_zone(rsi15)
+        if rsi_in_balance:
+            warning_only = True
+            reason.append("RSI15 in 40-60 balance zone (warning)")
+
+        # bias flips opposite → this IS a close signal
         if side == "SHORT" and l15["bias"].startswith("BUY"):
             bad_force = True
             reason.append(f"15m bias flipped to {l15['bias']}")
@@ -244,6 +254,7 @@ def main():
             bad_force = True
             reason.append(f"15m bias flipped to {l15['bias']}")
 
+        # Only close on actual bad force (bias flip), not just RSI balance zone
         if bad_force:
             notes = "; ".join(reason)
             log_event(
@@ -259,6 +270,16 @@ def main():
             print(
                 "TELEGRAM: [BTCUSDT 15m] CLOSE {side} | Price={p:.2f} | RSI={r:.2f} | Reason: {notes} | CandleUTC={cts}".format(
                     side=side, p=close, r=rsi15, notes=notes, cts=candle_ts
+                )
+            )
+            return
+
+        # Warning only (RSI balance zone but no bias flip) - HOLD but emit warning
+        if warning_only and not bad_force:
+            save_json(STATE_PATH, state)
+            print(
+                "TELEGRAM: [BTCUSDT 15m] ⚠️ WARNING {side} | Price={p:.2f} | RSI={r:.2f} | {warn} | HOLD position | CandleUTC={cts}".format(
+                    side=side, p=close, r=rsi15, warn="; ".join(reason), cts=candle_ts
                 )
             )
             return

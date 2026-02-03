@@ -86,10 +86,23 @@ Rules:
   - UP if RSI>50 AND EMA(RSI)>WMA(RSI)
   - DOWN if RSI<50 AND EMA(RSI)<WMA(RSI)
   - else RANGE/TRANSITION
-- **Rule B (band 40/60):**
-  - STRONG_UP if RSI>60 AND EMA>WMA
-  - STRONG_DOWN if RSI<40 AND EMA<WMA
-  - else NEUTRAL (often a balance/"RSI around 50" state)
+- **Rule B (band 40/60) — direction bias:**
+  - BULLISH if RSI>60 AND EMA>WMA
+  - BEARISH if RSI<40 AND EMA<WMA
+  - else NEUTRAL (balance zone)
+- **Rule C (extreme 80/20) — true momentum strength:**
+  - STRONG (overbought) if RSI > 80
+  - STRONG (oversold) if RSI < 20
+  - 60-80 / 20-40 = có hướng nhưng chưa mạnh thực sự
+
+**RSI Zones cheat sheet:**
+| Zone | RSI | Ý nghĩa |
+|------|-----|---------|
+| Overbought mạnh | > 80 | Momentum cực mạnh, có thể điều chỉnh |
+| Bullish | 60-80 | Có hướng tăng, chưa extreme |
+| Balance | 40-60 | Cân bằng, không rõ trend |
+| Bearish | 20-40 | Có hướng giảm, chưa extreme |
+| Oversold mạnh | < 20 | Momentum cực mạnh, có thể bounce |
 
 Additional concept (video-derived):
 - **RSI ~50 balance zone:** when RSI oscillates around 50 (roughly 40–60), buy/sell pressure is near-balanced → trend is unclear → default to WAIT/NO TRADE until a clear signal wave forms.
@@ -100,15 +113,35 @@ Additional concept (video-derived):
 
 MTF priority (bias): 1D → 4H → 1H → 15m.
 - **MTF confluence (strong trend):** treat a trend as strong only when multiple timeframes/tools are aligned ("đồng vọng/đồng thuận").
+- **Kỷ luật hold:** Đã vào lệnh = chờ đến SL hoặc TP. Không close vì "không move", "RSI hồi chút", hoặc "không chắc chắn". Commit to the plan.
+
+## Folder structure
+
+```
+skills/trading-bot/
+├── SKILL.md                    ← BẠN ĐANG ĐÂY - entry point, rules chính
+├── scripts/                    ← Python scripts (fetch data, tính toán)
+│   ├── snapshot_mtf.py         ← fetch candles từ Binance
+│   ├── module_trend_mtf.py     ← legacy trend labels
+│   ├── module_sr_mtf.py        ← legacy S/R zones
+│   └── run_signal.py           ← legacy single-TF signal
+└── references/
+    ├── glossary_vi.md          ← thuật ngữ tiếng Việt
+    ├── modules/                ← 10 training modules (mindset, RSI, MTF...)
+    ├── context_blocks/         ← cheatsheets (RSI, risk management)
+    ├── spec/                   ← trader_spec.yaml, risk_management.md
+    ├── templates/              ← prompt templates
+    └── video_notes/            ← notes từ 4 videos đã học
+```
 
 ## Files to use
 
-- Glossary (terms): `references/glossary_vi.md`
-- Video note template: `references/templates/video_block_note_template.md`
-
-- Trading spec: `references/spec/trader_spec.yaml` (if present)
-- System/modules: `references/modules/` (notably RSI/MA9/WMA45 system)
-- Templates: `references/templates/`
+- **Glossary (terms):** `references/glossary_vi.md`
+- **RSI cheatsheet:** `references/context_blocks/rsi_cheatsheet.md`
+- **Risk rules:** `references/context_blocks/risk_management_guidelines.md`
+- **Trading spec:** `references/spec/trader_spec.yaml`
+- **Training modules:** `references/modules/` (RSI, MTF, psychology...)
+- **Video notes:** `references/video_notes/` (learned from videos)
 
 ## Market snapshot (deterministic)
 
@@ -122,6 +155,41 @@ This snapshot includes per-timeframe indicators:
 - RSI14
 - EMA9(RSI14)
 - WMA45(RSI14)
+
+## Phân tích lực (LLM-first approach)
+
+**QUAN TRỌNG:** Không dùng code Python để tính toán thống kê (avg, %, distribution). Chỉ fetch số liệu thô, rồi LLM tự đọc và phân tích.
+
+### Nguyên tắc phân tích:
+
+1. **Xem history dài (120-240 candles)** — không chỉ 1 thời điểm
+   - 1D: 60+ candles (2 tháng)
+   - 4H: 120+ candles (20 ngày)
+   - 1H: 120+ candles (5 ngày)
+   - 15m: 200+ candles (2 ngày)
+
+2. **Đọc quán tính (momentum flow):**
+   - RSI đang tăng hay giảm theo thời gian?
+   - Peaks đang cao dần hay thấp dần?
+   - Troughs đang cao dần hay thấp dần?
+   - Bounce/pullback đến đâu rồi quay đầu?
+
+3. **Xác định regime từ pattern:**
+   - **Bull range:** RSI 40-80, hồi giữ > 40, peaks thường > 60
+   - **Bear range:** RSI 20-60, rally kẹt < 60, peaks thường < 60
+   - Regime shift cần thấy pattern thay đổi, không chỉ 1 điểm
+
+4. **RSI extreme (Rule C):**
+   - **> 80:** Overbought mạnh (momentum cực mạnh)
+   - **60-80:** Bullish nhưng chưa extreme
+   - **40-60:** Balance zone — WAIT
+   - **20-40:** Bearish nhưng chưa extreme
+   - **< 20:** Oversold mạnh (momentum cực mạnh, có thể bounce)
+
+5. **Context script:** `trading/cron_15m_context.py`
+   - Chỉ fetch raw numbers
+   - Không tính trend labels, S/R, hay SL/TP
+   - LLM đọc số và tự phân tích theo rules trên
 
 ### Single-timeframe signal (legacy / quick tests)
 
